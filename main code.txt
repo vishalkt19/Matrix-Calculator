@@ -1,0 +1,764 @@
+#include <stdio.h>
+#include<math.h>
+void add();
+void sub();
+void scalarmultiply();
+void multiply();
+void rowsum();
+void coulmnsum();
+void tanspose();
+void triangular_sum(int r1,int c1);
+void diagonal_add(int m,int n);
+void cofac(float comatr[40][40], int f);
+void cofac1(float comatr[40][40], int f);
+float determin(float matrix[40][40], int k);
+void inv(float matr[40][40], float m1[40][40], int r);
+void adj(float matr[40][40], float m1[40][40], int r);
+void main() 
+{
+     int z;
+    do
+    {  
+         printf("\n\n\n\n\n\n");
+        printf(" Enter 1 for Matrix Addition\n Enter 2 for Matrix Subtraction\n Enter 3 for Scalar Mulitplication \n Enter 4 for Row Matrix Sum \n Enter 5 for Column Matrix Sum\n Enter 6 for Matrix Multiplication\n Enter 7 for Transpose\n Enter 8 for Triangular Sum\n Enter 9 for Diagnol Elements Sum\n Enter 10 for Determinant of Matrix\n Enter 11 for Adjoint of Matrix\nEnter 12 for Inverse of matrix\nEnter 0 to Stop\n");
+         scanf("%d",&z);
+        if(z==1)
+        add();
+        else if(z==2)
+        sub();
+        else if(z==3)
+        scalarmultiply();
+        else if(z==4)
+        rowsum();
+        else if(z==5)
+        coulmnsum();
+        else if(z==6)
+        multiply();
+        else if(z==7)
+        tanspose();
+        else if(z==8)
+        {
+            int r1,c1;
+            printf("enter no of rows and columns:\n");
+            scanf("%d%d",&r1,&c1);
+            while (c1 != r1) 
+            {
+                printf("Error , Enter square matrix dimensions \n");
+                printf("Enter rows and columns for the matrix: ");
+                scanf("%d%d", &r1, &c1);
+            }
+            triangular_sum(r1,c1);
+        }
+        else if(z==9)
+        {
+             int m,n;
+            printf("enter no. of rows and columns:\n");
+            scanf("%d%d",&m,&n);
+            while (m != n) 
+            {
+                printf("Error , Enter square matrix dimensions \n");
+                printf("Enter rows and columns for the matrix: ");
+                scanf("%d%d", &m, &n);
+            }
+            diagonal_add(m,n); 
+        }
+        else if(z==10)
+        {
+            float matrix[40][40], deter;
+            int a, b, row, col;
+            printf("Enter the rows and coulmns of the Matrix : ");
+            scanf("%d %d", &row, &col);
+            if(row==col)
+            {
+                 printf("Enter the elements of %d X %d matrix : \n", row, col);
+                for(a=0;a<row;++a)
+                {
+                    for(b=0;b<col;++b)
+                    {
+                        printf("Enter a%d%d: ", a + 1, b + 1);
+                        scanf("%f",&matrix[a][b]);
+                    }
+                }
+                printf("array elements are\n");
+                for(a=0;a<row;++a)
+                {
+                    for(b=0;b<col;++b)
+                    {
+                        printf("%d\t",(int)(matrix[a][b]));
+                    }
+                    printf("\n");
+                }
+                deter = determin(matrix, row);
+                printf("\n The Determinant of the Matrix is :%d", (int)(deter));
+            }
+            else
+            printf("Determinant is only possible for Square matrix\n");
+        }
+        else if(z==11)
+        { 
+            float matrix[40][40], deter;
+            int a, b, row, col;
+            printf("Enter the rows and coulmns of the Matrix : ");
+            scanf("%d %d", &row, &col);
+            if(row==col)
+            {
+                 printf("Enter the elements of %d X %d matrix : \n", row, col);
+                for(a=0;a<row;++a)
+                {
+                    for(b=0;b<col;++b)
+                    {
+                        printf("Enter a%d%d: ", a + 1, b + 1);
+                        scanf("%f",&matrix[a][b]);
+                    }
+                }
+                printf("array elements are\n");
+                for(a=0;a<row;++a)
+                {
+                    for(b=0;b<col;++b)
+                    {
+                        printf("%d\t",(int)(matrix[a][b]));
+                    }
+                    printf("\n");
+                }
+                deter = determin(matrix, row);
+                printf("\n The Determinant of the Matrix is :%d", (int)(deter));
+                cofac1(matrix, row);
+            }
+            else
+            printf("Adjoint is only possible for Square matrix\n");
+        }
+        else if(z==12)
+        {
+            float matrix[40][40], deter;
+            int a, b, row, col;
+            printf("Enter the rows and coulmns of the Matrix : ");
+            scanf("%d %d", &row, &col);
+            if(row==col)
+            {
+                printf("Enter the elements of %d X %d matrix : \n", row, col);
+                for(a=0;a<row;++a)
+                {
+                    for(b=0;b<col;++b)
+                    {
+                        printf("Enter a%d%d: ", a + 1, b + 1);
+                        scanf("%f",&matrix[a][b]);
+                    }
+                }
+                printf("array elements are\n");
+                for(a=0;a<row;++a)
+                {
+                    for(b=0;b<col;++b)
+                    {
+                        printf("%d\t",(int)(matrix[a][b]));
+                    }
+                    printf("\n");
+                }
+                deter = determin(matrix, row);
+                printf("\n The Determinant of the Matrix is :%d", (int)(deter));
+                if(deter == 0)
+                printf("\n Inverse of Matrix is not possible for the matrices having 0 Determinant value\n");
+                else
+                cofac(matrix, row);
+            }
+           else
+           printf("\n Inverse of Matrix is only possible for Square matrix give same number of rows and columns \n");
+        }
+        else if(z==0)
+        break;
+        else
+        printf("Wrong Choice,Choose Again\n");
+   }
+   while(z!=0);
+   printf("The End!\n");
+}
+
+void add()
+{
+    int m, n;
+    printf("enter the order of matrix addition\n");
+    scanf("%d %d",&m,&n);
+    int i, j;
+    int mat1[m][n], mat2[m][n],sum[m][n];
+    //input 1st matrix
+    printf("enter a matrix elements\n");
+    for(i = 0; i < m; i++)
+    {
+    for(j = 0; j < n; j++)
+    {
+        printf("Enter a%d%d: ", i + 1, j + 1);
+        scanf("%d",&mat1[i][j]);
+    }
+    }
+    
+    //input 2nd matrix
+    printf("enter b matrix elements\n");
+    for(i = 0; i <m; i++)
+    {
+    for(j = 0; j < n; j++)
+    {
+        printf("Enter b%d%d: ", i + 1, j + 1);
+        scanf("%d",&mat2[i][j]);
+    }
+    }
+    printf("\n1st Matrix\n");
+    for(i=0;i<m;i++)
+    {
+        for(j=0;j<n;j++)
+        {
+            printf("%d\t",mat1[i][j]);
+        }
+        printf("\n");
+    }
+    printf("\n2nd Matrix\n");
+    for(i=0;i<m;i++)
+    {
+        for(j=0;j<n;j++)
+        {
+            printf("%d\t",mat2[i][j]);
+        }
+        printf("\n");
+    }
+    //sum of 2 matrix
+    for(i = 0; i < m; i++)
+    {
+        for(j = 0; j < n; j++)
+        {
+         sum[i][j] = mat1[i][j] + mat2[i][j];
+        }
+    }
+    //printing result matrix
+    printf("Sum Matrix=\n");
+    for(i = 0; i < m; i++)
+    {
+    for(j = 0; j < n; j++)
+    printf("%d\t", sum[i][j]);
+    printf("\n");
+    }
+}
+void sub()
+{
+    int m, n;
+    printf("enter the order of matrix Subtraction\n");
+    scanf("%d %d",&m,&n);
+    int i, j;
+    int mat1[m][n], mat2[m][n],dif[m][n];
+    //input 1st matrix
+    printf("enter a matrix elements\n");
+    for(i = 0; i < m; i++)
+    {
+    for(j = 0; j < n; j++)
+    {
+        printf("Enter a%d%d: ", i + 1, j + 1);
+        scanf("%d",&mat1[i][j]);
+    }
+    }
+    //input 2nd matrix
+    printf("enter b matrix elements\n");
+    for(i = 0; i < m; i++)
+    {
+    for(j = 0; j < n; j++)
+    {
+        printf("Enter b%d%d: ", i + 1, j + 1);
+        scanf("%d",&mat2[i][j]);
+    }
+    }
+    printf("\n1st Matrix\n");
+    for(i=0;i<m;i++)
+    {
+        for(j=0;j<n;j++)
+        {
+            printf("%d\t",mat1[i][j]);
+        }
+        printf("\n");
+    }
+    printf("\n2nd Matrix\n");
+    for(i=0;i<m;i++)
+    {
+        for(j=0;j<n;j++)
+        {
+            printf("%d\t",mat2[i][j]);
+        }
+        printf("\n");
+    }
+    //Difference of 2 matrix
+    for(i = 0; i < m; i++)
+    {
+        for(j = 0; j < n; j++)
+        {
+         dif[i][j] = mat1[i][j] - mat2[i][j];
+        }
+    }
+    //printing result matrix
+    printf("Difference Matrix=\n");
+    for(i = 0; i < m; i++)
+    {
+    for(j = 0; j < n; j++)
+    printf("%d\t", dif[i][j]);
+    printf("\n");
+    }
+}
+void scalarmultiply()
+{
+    int r1, c1,k;
+    printf("Enter rows and column for the first matrix: ");
+    scanf("%d %d", &r1, &c1);
+    int first[r1][c1];
+    printf("Enter the Scalar Multiplier ");
+    scanf("%d", &k);
+    printf("\n Enter elements of matrix 1: \n");
+    for (int i = 0; i < r1; i++) 
+    {
+       for (int j = 0; j < c1; j++) 
+       {
+          printf("Enter a%d%d: ", i + 1, j + 1);
+          scanf("%d", &first[i][j]);
+       }
+    }
+    printf("\nInput Matrix\n");
+    for(int i=0;i<r1;i++)
+    {
+        for(int j=0;j<c1;j++)
+        {
+            printf("%d\t",first[i][j]);
+        }
+        printf("\n");
+    }
+    //Scalar Multiplication
+    printf("Scalar Multiplied Matrix:\n");
+    for (int i = 0; i < r1; i++) 
+    {
+       for (int j = 0; j < c1; j++) 
+       {
+            first[i][j]=k*first[i][j];
+       }
+    }
+    //printing result matrix
+    for (int i = 0; i < r1; ++i)
+   {
+      for (int j = 0; j < c1; ++j) 
+      {
+         printf("%d\t",first[i][j]);
+      }
+      printf("\n");
+   }
+    
+}
+void multiply()
+{
+   int r1, c1, r2, c2;
+   printf("Enter rows and column for the first matrix: ");
+   scanf("%d %d", &r1, &c1);
+   printf("Enter rows and column for the second matrix: ");
+   scanf("%d %d", &r2, &c2);
+   int first[r1][c1], second[r2][c2], result[r1][c2]; 
+   //to check if multiplication of matrices is possible
+   while (c1 != r2) 
+   {
+      printf("Error! Enter rows and columns again.\n");
+      printf("Enter rows and columns for the first matrix: ");
+      scanf("%d%d", &r1, &c1);
+      printf("Enter rows and columns for the second matrix: ");
+      scanf("%d%d", &r2, &c2);
+   }
+   //input matrix 1 elements
+   printf("\n Enter elements of matrix 1: \n");
+   for (int i = 0; i < r1; i++) 
+   {
+      for (int j = 0; j < c1; j++) 
+      {
+         printf("Enter a%d%d: ", i + 1, j + 1);
+         scanf("%d", &first[i][j]);
+      }
+   }
+    //input matrix 2 elements
+   printf("\nEnter elements of matrix 2: \n");
+
+   for (int i = 0; i < r2; i++) 
+   {
+      for (int j = 0; j < c2; j++) 
+      {
+         printf("Enter a%d%d: ", i + 1, j + 1);
+         scanf("%d", &second[i][j]);
+      }
+   }
+   printf("\n1st Matrix\n");
+    for(int i=0;i<r1;i++)
+    {
+        for(int j=0;j<c1;j++)
+        {
+            printf("%d\t",first[i][j]);
+        }
+        printf("\n");
+    }
+    printf("\n2nd Matrix\n");
+    for(int i=0;i<r2;i++)
+    {
+        for(int j=0;j<c2;j++)
+        {
+            printf("%d\t",second[i][j]);
+        }
+        printf("\n");
+    }
+    // Multiplying first and second matrices and storing it in result
+   for (int i = 0; i < r1; ++i) 
+   {
+      for (int j = 0; j < c2; ++j) 
+      {
+         result[i][j] = 0;
+         for (int k = 0; k < c1; ++k) 
+         {
+            result[i][j] += first[i][k] * second[k][j];
+         }
+      }
+   }
+   //printing result matrix
+   printf("\nProduct Matrix:\n");
+   for (int i = 0; i < r1; ++i)
+   {
+      for (int j = 0; j < c2; ++j) 
+      {
+         printf("%d\t", result[i][j]);
+      }
+      printf("\n");
+   }
+}
+void rowsum()
+{
+    int i, j, r1, c1, a[10][10], Sum;
+    printf("Enter Number of rows and columns  :  ");
+    scanf("%d %d", &r1, &c1);
+    printf("\n Enter elements of matrix : \n");
+   for (int i = 0; i < r1; i++) 
+   {
+      for (int j = 0; j < c1; j++) 
+      {
+         printf("Enter a%d%d: ", i + 1, j + 1);
+         scanf("%d", &a[i][j]);
+      }
+   }
+   printf("\nInput matrix\n");
+    for(int i=0;i<r1;i++)
+    {
+        for(int j=0;j<c1;j++)
+        {
+            printf("%d\t",a[i][j]);
+        }
+        printf("\n");
+    }
+    //calculating and printing row sum
+    for(i = 0; i <r1; i++)
+    {
+        Sum = 0;
+        for(j = 0; j <c1; j++)
+        {
+            Sum+=a[i][j];
+        }
+        printf("The Sum of Elements of %d Row in a Matrix =  %d \n",i+1, Sum );
+    }
+}
+void coulmnsum()
+{
+    int i, j, r1, c1, a[10][10], Sum;
+    printf("Enter Number of rows and columns  :  ");
+    scanf("%d %d", &r1, &c1);
+    printf("\n Enter elements of matrix : \n");
+   for (int i = 0; i < r1; i++) 
+   {
+      for (int j = 0; j < c1; j++) 
+      {
+         printf("Enter a%d%d: ", i + 1, j + 1);
+         scanf("%d", &a[i][j]);
+      }
+   }
+   printf("\nInput matrix\n");
+    for(i=0;i<r1;i++)
+    {
+        for(j=0;j<c1;j++)
+        {
+            printf("%d\t",a[i][j]);
+        }
+        printf("\n");
+    }
+    //calculating and printing coulmn sum
+    for(i = 0; i <c1; i++)
+    {
+        Sum = 0;
+        for(j = 0; j <r1; j++)
+        {
+            Sum+=a[j][i];
+        }
+        printf("The Sum of Elements of %d column in a Matrix =  %d \n",i+1, Sum );
+    }
+}
+void tanspose()
+{
+    int i, j, r1, c1;
+    printf("Enter Number of rows and columns  :  ");
+    scanf("%d %d", &r1, &c1);
+    int a[r1][c1],transpose[c1][r1];
+    printf("\n Enter elements of matrix : \n");
+   for (int i = 0; i < r1; i++) 
+   {
+      for (int j = 0; j < c1; j++) 
+      {
+         printf("Enter a%d%d: ", i + 1, j + 1);
+         scanf("%d", &a[i][j]);
+      }
+   }
+   printf("\nInput matrix\n");
+    for(i=0;i<r1;i++)
+    {
+        for(j=0;j<c1;j++)
+        {
+            printf("%d\t",a[i][j]);
+        }
+        printf("\n");
+    }
+   //finding the transpose of matrix
+   for (int i = 0; i < r1; ++i)
+   {
+      for (int j = 0; j < c1; ++j) 
+      {
+         transpose[j][i]=a[i][j];
+      }
+   }
+   
+   printf("\nTranspose of result Matrix:\n");
+   //printing transpose of matrix
+   for (int i = 0; i < c1; ++i)
+   {
+      for (int j = 0; j < r1; ++j) 
+      {
+         printf("%d  ", transpose[i][j]);
+      }
+	printf("\n");
+   }
+}
+void triangular_sum(int r1,int c1)
+{
+    int i,j,sum1=0,sum2=0;
+    int a[20][20];
+    printf("enter the elements of the matrix:\n");
+    for(i=0;i<r1;i++)
+    for(j=0;j<c1;j++)
+    {
+         printf("Enter a%d%d: ", i + 1, j + 1);
+        scanf("%d",&a[i][j]);
+    }
+    printf("\n");
+    printf("\nInput matrix\n");
+    for(i=0;i<r1;i++)
+    {
+        for(j=0;j<c1;j++)
+        {
+            printf("%d\t",a[i][j]);
+        }
+        printf("\n");
+    }
+    for (i = 0; i < r1; i++)
+    for (j = 0; j < c1; j++) 
+    {
+        if (i <= j) 
+        {
+            sum1 += a[i][j];
+        }
+        if (j <= i)
+        {
+            sum2+= a[i][j];
+        }
+    }
+    printf("Upper sum is %d\n",sum1);
+    printf("Lower sum is %d",sum2);
+    
+}
+void diagonal_add(int m,int n)
+{
+    int i,j,sum1=0,sum2=0;
+    int a[20][20];
+    printf("enter the elements of the matrix:\n");
+    for(i=0;i<m;i++)
+    for(j=0;j<n;j++)
+    {
+        printf("Enter a%d%d: ", i + 1, j + 1);
+        scanf("%d",&a[i][j]);
+    }
+    printf("\n");
+    printf("\nInput matrix\n");
+    for(int i=0;i<m;i++)
+    {
+        for(int j=0;j<n;j++)
+        {
+            printf("%d\t",a[i][j]);
+        }
+        printf("\n");
+    }
+    for(i=0;i<m;i++)
+    {
+        for(j=0;j<n;j++)
+        {
+            if(i==j)
+            {
+                sum1+=a[i][j];
+            }
+            if(i+j==n-1)
+            sum2+=a[i][j];
+        }
+    }
+    printf("\n Sum of main Diagonal is %d",sum1);
+    printf("\n Sum of alterante Diagonal %d",sum2);
+}
+void cofac(float comatr[40][40], int f)
+   {
+        float matr[40][40], cofact[40][40];
+        int a, b, c, d, x, y;
+        for(c=0; c<f; ++c)
+        {
+            for(d=0; d<f; ++d)
+            {
+               x=0;
+               y=0;
+               for(a=0;a<f; ++a)
+               {
+                    for(b=0; b<f; ++b)
+                    {
+                        if(a != c && b != d)
+                        {
+                            matr[x][y]=comatr[a][b];
+                            if(y<(f-2))
+                             y++;
+                             else
+                            {
+                                y=0;
+                                x++;
+                           }
+                       }
+                    }
+                }
+            cofact[c][d] = pow(-1,c + d) * determin(matr,f-1);
+           }
+        }
+        inv(comatr, cofact, f);
+    }
+void cofac1(float comatr[40][40], int f)
+   {
+        float matr[40][40], cofact[40][40];
+        int a, b, c, d, x, y;
+        for(c=0; c<f; ++c)
+        {
+            for(d=0; d<f; ++d)
+            {
+               x=0;
+               y=0;
+               for(a=0;a<f; ++a)
+               {
+                    for(b=0; b<f; ++b)
+                    {
+                        if(a != c && b != d)
+                        {
+                            matr[x][y]=comatr[a][b];
+                            if(y<(f-2))
+                             y++;
+                             else
+                            {
+                                y=0;
+                                x++;
+                           }
+                       }
+                    }
+                }
+            cofact[c][d] = pow(-1,c + d) * determin(matr,f-1);
+           }
+        }
+        adj(comatr, cofact, f);
+    }    
+
+
+float determin(float matrix[40][40], int k)
+    {
+        float deter=0.0, z=1.0, mt[40][40];
+        int a, b, c, x, y;
+        if(k==1)
+        {
+            return(matrix[0][0]);
+        }
+        else
+        {
+            deter=0;
+         for(a=0;a<k;++a)
+         {
+               x=0;
+               y=0;
+               for(b=0;b<k;++b)
+               {
+                    for(c=0;c<k;++c)
+                    {
+                        mt[b][c]=0;
+                        if((b != 0) && (c != a))
+                        {
+                             mt[x][y]=matrix[b][c];
+                            if(y<(k-2))
+                            y++;
+                            else
+                            {
+                                 y=0;
+                                 x++;
+                            }
+                        }
+                    }
+               }
+               deter=deter + z * (matrix[0][a] * determin(mt,k-1));
+               z=-1 * z;
+            }
+        }
+        return(deter);
+    }
+
+
+
+void inv(float matr[40][40], float m1[40][40], int r)
+    {
+        float inv_matrix[40][40], tran[40][40], d;
+        int a,b;
+        for(a=0;a<r;++a)
+        {
+            for(b=0;b<r;++b)
+            {
+              tran[a][b]=m1[b][a];
+            }
+        }
+        d=determin(matr, r);
+        for(a=0;a<r;++a)
+        {
+            for(b=0;b<r;++b)
+            {
+                inv_matrix[a][b]=tran[a][b] / d;
+            }
+        }
+        printf("\n\n The Inverse of matrix is \n\n");
+        for(a=0;a<r;++a)
+        {
+           for(b=0;b<r;++b)
+            printf("%.2f\t", inv_matrix[a][b]);
+            printf("\n");
+        }
+    }
+void adj(float matr[40][40], float m1[40][40], int r)
+    {
+        float inv_matrix[40][40], tran[40][40], d;
+        int a,b;
+        for(a=0;a<r;++a)
+        {
+            for(b=0;b<r;++b)
+            {
+              tran[a][b]=m1[b][a];
+            }
+        }
+        
+        printf("\n\n The Adjoint of matrix is \n\n");
+        for(a=0;a<r;++a)
+        {
+           for(b=0;b<r;++b)
+            printf("%d\t", (int)(tran[a][b]));
+            printf("\n");
+        }
+    }
